@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walletsync - Financial Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Add some basic styling for the canvas and page */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .chart-container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 2em 0;
+        }
+
+        canvas {
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Financial Analysis Section -->
+    <div class="chart-container">
+        <h3>Financial Analysis</h3>
+        <p>Analyze your spending patterns and make informed financial decisions using the graph below.</p>
+
+        <!-- Chart.js Canvas -->
+        <canvas id="expenseChart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        // Get the categories and amounts passed from Django
+        const categories = JSON.parse('{{ categories|safe }}');
+        const amounts = JSON.parse('{{ amounts|safe }}');
+
+        // Create the chart
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        const expenseChart = new Chart(ctx, {
+            type: 'bar',  // Bar chart
+            data: {
+                labels: categories,  // Categories for the x-axis
+                datasets: [{
+                    label: 'Expenses (₹)',
+                    data: amounts,  // Expense amounts for the y-axis
+                    backgroundColor: '#4e73df',  // Blue bars
+                    borderColor: '#2e59d9',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
