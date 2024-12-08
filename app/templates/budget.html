@@ -3,190 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Walletsync - Budget</title>
+    <title>WalletSync - Budget</title>
     <style>
-        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            height: 100vh;
-            margin: 0;
-            padding: 20px;
+            min-height: 100vh;
         }
 
-        .budget-form {
-            background: #fff;
-            padding: 30px; /* Increased padding for better spacing */
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            width: 300px;
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
             text-align: center;
-            margin-bottom: 20px;
-            transition: transform 0.3s;
         }
 
-        .budget-form:hover {
-            transform: translateY(-5px);
-        }
-
-        .budget-form h2 {
-            margin-bottom: 15px; /* Slightly reduced margin for a tighter header */
-            color: #007BFF;
-        }
-
-        .budget-form input[type="number"] {
+        .budget-form input {
             width: 100%;
-            padding: 12px; /* Increased padding for more comfortable input */
-            margin-bottom: 20px;
-            border: 1px solid #007BFF;
-            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
         }
 
         .budget-form button {
             width: 100%;
-            padding: 12px; /* Increased padding for better button size */
-            background-color: #007BFF;
-            color: #fff;
+            padding: 15px;
+            background-color: #007bff;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
         .budget-form button:hover {
             background-color: #0056b3;
         }
 
-        /* Slider Styles */
-        .slider {
-            width: 100%;
-            max-width: 800px;
-            overflow: hidden;
-            margin-top: 20px;
-            position: relative;
-        }
-
-        .slides {
-            display: flex;
-            transition: transform 0.5s ease;
-        }
-
-        .slide {
-            min-width: 100%;
-            box-sizing: border-box;
-            padding: 20px;
-            background: #fff;
-            border: 1px solid #007BFF;
+        .budget-amount {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
         }
 
-        .slide h4 {
-            margin-bottom: 10px;
-            font-size: 1.5em;
-            color: #007BFF;
-        }
-
-        .slide p {
-            font-size: 1em;
-            color: #333;
-        }
-
-        /* Navigation Buttons */
-        .nav-buttons {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .nav-buttons button {
-            background-color: #007BFF;
-            color: #fff;
+        .back-home-button {
+            margin-top: 15px;
+            padding: 12px 20px;
+            background-color: #f44336;
+            color: white;
             border: none;
-            border-radius: 4px;
-            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s;
-            margin: 0 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
         }
 
-        .nav-buttons button:hover {
-            background-color: #0056b3;
-        }
-
-        .nav-buttons button:focus {
-            outline: 2px solid #0056b3;
+        .back-home-button:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
 <body>
 
-    <!-- Budget Form -->
-    <div class="budget-form">
-        <h2>Set Your Budget</h2>
-        <form action="{% url 'budget' %}" method="POST">
+    <div class="container">
+        <h1>Set Your Budget</h1>
+
+        <!-- Budget Form -->
+        <form class="budget-form" action="{% url 'budget' %}" method="POST">
             {% csrf_token %}
-            <input type="number" name="budget" placeholder="Enter your monthly budget" required min="1" />
-            <button type="submit">Submit</button>
+            <input type="number" name="amount" placeholder="Enter your monthly budget" required min="1">
+            <button type="submit">Set Budget</button>
         </form>
-        <div id="confirmation" style="display: none; color: green; margin-top: 10px;">
-            Budget set successfully!
-        </div>
-    </div>
 
-    <!-- Sliding Window for Reasons -->
-    <div class="slider">
-        <div class="slides">
-            <div class="slide">
-                <h4>Control Spending</h4>
-                <p>Setting a budget helps you control your spending and avoid impulse purchases.</p>
+        <!-- Display User's Current Budget -->
+        {% if budget %}
+            <div class="budget-amount">
+                Current Budget: ₹{{ budget.amount }}
             </div>
-            <div class="slide">
-                <h4>Achieve Goals</h4>
-                <p>With a budget, you can set financial goals and work towards achieving them.</p>
+        {% else %}
+            <div class="budget-amount">
+                No budget set yet.
             </div>
-            <div class="slide">
-                <h4>Reduce Stress</h4>
-                <p>Knowing your financial limits can reduce stress and provide peace of mind.</p>
-            </div>
-        </div>
+        {% endif %}
+
+        <!-- Back to Home Button -->
+        <a href="{% url 'home' %}" class="back-home-button">Back to Home</a>
     </div>
-
-    <div class="nav-buttons">
-        <button id="prev" aria-label="Previous Slide">Previous</button>
-        <button id="next" aria-label="Next Slide">Next</button>
-    </div>
-
-    <script>
-        let currentIndex = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
-
-        function updateSlidePosition() {
-            document.querySelector('.slides').style.transform = 'translateX(' + (-currentIndex * 100) + '%)';
-        }
-
-        document.getElementById('next').addEventListener('click', () => {
-            currentIndex = (currentIndex + 1) % totalSlides;
-            updateSlidePosition();
-        });
-
-        document.getElementById('prev').addEventListener('click', () => {
-            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-            updateSlidePosition();
-        });
-
-        // Autoplay for the slider
-        setInterval(() => {
-            currentIndex = (currentIndex + 1) % totalSlides;
-            updateSlidePosition();
-        }, 5000); // Auto-slide every 5 seconds
-    </script>
 
 </body>
 </html>
